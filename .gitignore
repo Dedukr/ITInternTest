@@ -46,7 +46,7 @@ dmypy.json
 .pyre/
 
 # Environments
-.env
+# .env
 .venv
 env/
 venv/
