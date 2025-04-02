@@ -54,6 +54,21 @@ class CompanyDetailedView(APIView):
             serializer.save()
             return Response(serializer.data)
         raise ValidationError(serializer.errors)
+    
+    def patch(self, request, pk):
+        """
+        PATCH method to partially update an existing company by ID.
+        """
+        try:
+            company = Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            raise NotFound(f"Company {pk} not found")
+
+        serializer = CompanySerializer(company, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        raise ValidationError(serializer.errors)
 
     def delete(self, request, pk):
         """
