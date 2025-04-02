@@ -10,19 +10,10 @@ from .serializers import CompanySerializer
 
 # Create your views here.
 class CompanyView(APIView):
-    def get(self, request, pk=None):
+    def get(self, request):
         """
-        GET method to retrieve all companies or a single company by ID.
+        GET method to retrieve all companies.
         """
-        if pk:
-            # Retrieve a single company by ID
-            try:
-                company = Company.objects.get(pk=pk)
-            except Company.DoesNotExist:
-                raise NotFound(f"Company {pk} not found")
-            serializer = CompanySerializer(company)
-            return Response(serializer.data)
-        # Retrieve all companies
         companies = Company.objects.all()
         serializer = CompanySerializer(companies, many=True)
         return Response(serializer.data)
@@ -36,7 +27,19 @@ class CompanyView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         raise ValidationError(serializer.errors)
-
+    
+class CompanyDetailedView(APIView):
+    def get(self, request, pk):
+        """
+        GET method to retrieve a single company by ID.
+        """
+        try:
+            company = Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            raise NotFound(f"Company {pk} not found")
+        serializer = CompanySerializer(company)
+        return Response(serializer.data)
+   
     def put(self, request, pk):
         """
         PUT method to update an existing company by ID.
